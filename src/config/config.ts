@@ -1,6 +1,6 @@
 export const config = {
   payfortAPI: {
-    baseUrl: 'https://payfort.dev.panashi.ae'
+    baseUrl: 'https://test.bindia.dev.panashi.ae'
   },
   app: {
     name: 'Amazon Payment Services - React Test App',

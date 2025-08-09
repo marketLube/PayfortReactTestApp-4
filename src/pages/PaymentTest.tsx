@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import PaymentApiService from '../services/PaymentApiService';
 import type { PaymentRequest, TokenizationFormData } from '../types/PaymentTypes';
+import { payfortStyles } from '../styles/payfortStyles';
 
 const PaymentTest: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -29,6 +30,7 @@ const PaymentTest: React.FC = () => {
   const [currentOrderId, setCurrentOrderId] = useState('');
 
   const formRef = useRef<HTMLFormElement>(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
     // Check if we have an existing order ID from query parameters (for retry scenarios)
@@ -69,6 +71,113 @@ const PaymentTest: React.FC = () => {
       }, 100);
     }
   }, [showPaymentForm, tokenizationFormData]);
+
+  // State to track CSS injection status
+  const [cssInjected, setCssInjected] = useState(false);
+  const [injectionAttempts, setInjectionAttempts] = useState(0);
+  const maxInjectionAttempts = 10;
+
+  // Function to inject custom CSS into the iframe
+  const injectCustomCss = () => {
+    if (!iframeRef.current || !iframeRef.current.contentWindow || cssInjected) {
+      return;
+    }
+
+    try {
+      // Try to access the iframe's document
+      const iframeDoc = iframeRef.current.contentWindow.document;
+      
+      // Check if we can access the iframe's document (same-origin policy)
+      if (iframeDoc) {
+        // Create a style element
+        const styleElement = iframeDoc.createElement('style');
+        styleElement.textContent = payfortStyles;
+        
+        // Append the style element to the iframe's head
+        iframeDoc.head.appendChild(styleElement);
+        console.log('Custom CSS injected directly into iframe');
+        setCssInjected(true);
+      } else {
+        // If we can't access the iframe's document due to same-origin policy,
+        // try using postMessage API
+        iframeRef.current.contentWindow.postMessage({
+          action: 'injectCss',
+          css: payfortStyles
+        }, '*');
+        console.log('Custom CSS injection message sent to iframe');
+        
+        // Increment the attempt counter
+        setInjectionAttempts(prev => prev + 1);
+      }
+    } catch (error) {
+      console.error('Error injecting custom CSS into iframe:', error);
+      
+      // Fallback: try to inject CSS using postMessage
+      try {
+        iframeRef.current.contentWindow.postMessage({
+          action: 'injectCss',
+          css: payfortStyles
+        }, '*');
+        console.log('Fallback: Custom CSS injection message sent to iframe');
+        
+        // Increment the attempt counter
+        setInjectionAttempts(prev => prev + 1);
+      } catch (fallbackError) {
+        console.error('Fallback CSS injection also failed:', fallbackError);
+        setInjectionAttempts(prev => prev + 1);
+      }
+    }
+  };
+
+  // Set up a timer to repeatedly try injecting CSS until successful or max attempts reached
+  useEffect(() => {
+    if (cssInjected || injectionAttempts >= maxInjectionAttempts) {
+      return;
+    }
+
+    if (showPaymentForm && iframeRef.current) {
+      const timer = setInterval(() => {
+        if (!cssInjected) {
+          console.log(`CSS injection attempt ${injectionAttempts + 1} of ${maxInjectionAttempts}`);
+          injectCustomCss();
+        } else {
+          clearInterval(timer);
+        }
+      }, 1000); // Try every second
+
+      return () => {
+        clearInterval(timer);
+      };
+    }
+  }, [showPaymentForm, cssInjected, injectionAttempts]);
+
+  // Handle messages from the iframe
+  useEffect(() => {
+    const handleIframeMessage = (event: MessageEvent) => {
+      // Check if the message is from our iframe
+      if (event.data) {
+        console.log('Received message from iframe:', event.data);
+        
+        if (event.data.status === 'ready') {
+          // Iframe is ready, inject our custom CSS
+          injectCustomCss();
+        } else if (event.data.status === 'css_injected' && event.data.success) {
+          // CSS was successfully injected
+          console.log('CSS injection confirmed by iframe');
+          setCssInjected(true);
+        } else if (event.data.status === 'css_injection_failed') {
+          // CSS injection failed
+          console.error('CSS injection failed:', event.data.error);
+          setInjectionAttempts(prev => prev + 1);
+        }
+      }
+    };
+
+    window.addEventListener('message', handleIframeMessage);
+    return () => {
+      window.removeEventListener('message', handleIframeMessage);
+    };
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -284,22 +393,32 @@ const PaymentTest: React.FC = () => {
 
                   <div className="payment-iframe-container">
                     <iframe
+                      ref={iframeRef}
                       id="paymentFrame"
                       name="paymentFrame"
                       width="100%"
                       height="500"
                       style={{ border: '2px solid #007bff', borderRadius: '8px' }}
                       title="Payment Form"
+                      onLoad={() => {
+                        console.log('Iframe loaded, attempting to inject CSS');
+                        // Reset injection status when iframe loads/reloads
+                        setCssInjected(false);
+                        setInjectionAttempts(0);
+                        // Initial injection attempt
+                        setTimeout(injectCustomCss, 500); // Give the iframe content some time to initialize
+                      }}
                     />
                   </div>
 
                   <form
                     ref={formRef}
-                    action={tokenizationFormData.actionUrl}
-                    method="post"
+                    action="/payfort-custom-form.html"
+                    method="get"
                     target="paymentFrame"
                     style={{ display: 'none' }}
                   >
+                    <input type="hidden" name="actionUrl" value={tokenizationFormData.actionUrl} />
                     <input type="hidden" name="service_command" value={tokenizationFormData.serviceCommand} />
                     <input type="hidden" name="access_code" value={tokenizationFormData.accessCode} />
                     <input type="hidden" name="merchant_identifier" value={tokenizationFormData.merchantIdentifier} />
