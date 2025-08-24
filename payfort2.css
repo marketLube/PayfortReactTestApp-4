@@ -1,0 +1,311 @@
+/*
+================================================================================
+ Amazon PayFort - Elegant & Functional Custom Payment Form CSS
+ Version 10.1-AR: Arabic / RTL Theme
+================================================================================
+ * This is the Right-to-Left (RTL) version for Arabic interfaces.
+ * It mirrors the layout of the English (LTR) version.
+================================================================================
+*/
+
+/* --- THEME VARIABLE DEFINITIONS (SAME AS LTR) --- */
+/* Prevent scroll on html and body */
+html {
+  height: 100% !important;
+  overflow: hidden !important;
+}
+
+/* Global box-sizing to prevent overflow */
+*,
+*::before,
+*::after {
+  box-sizing: border-box !important;
+}
+
+:root {
+  /* Light Theme (Default) */
+  --pf-bg-body: #fff;
+  --pf-bg-card: #ffffff;
+  --pf-text-primary: #333333;
+  --pf-text-label: #555555;
+  --pf-border-color: #cccccc;
+  --pf-border-focus: #007bff;
+  --pf-placeholder: #a9a9a9;
+  --pf-error: #dc3545;
+  --pf-shadow: rgba(0, 0, 0, 0.05);
+
+  /* Pay Button */
+  --pf-button-bg: #ffd700;
+  --pf-button-text: #000000;
+  --pf-button-hover-bg: #ffdd1a;
+  --pf-button-active-bg: #e6c200;
+  --pf-button-disabled-bg: #e0e0e0;
+}
+
+/* --- DARK THEME OVERRIDES (SAME AS LTR) --- */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --pf-bg-body: #121212;
+    --pf-bg-card: #1e1e1e;
+    --pf-text-primary: #e0e0e0;
+    --pf-text-label: #bbbbbb;
+    --pf-border-color: #555555;
+    --pf-border-focus: #82b1ff;
+    --pf-placeholder: #888888;
+    --pf-error: #ff6b6b;
+    --pf-shadow: rgba(0, 0, 0, 0.4);
+    --pf-button-disabled-bg: #444444;
+  }
+}
+
+/* --- GLOBAL & BODY STYLES (RTL) --- */
+body {
+  direction: rtl !important; /* RTL Change */
+  text-align: right !important; /* RTL Change */
+  /* RTL Change: Added a recommended Arabic font. Change "Tajawal" to your preferred font if needed. */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif !important;
+  padding: 10px !important;
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 100% !important;
+  overflow: hidden !important; /* Prevent body scroll */
+  background-color: var(--pf-bg-body) !important;
+  color: var(--pf-text-primary) !important;
+}
+
+/* --- WRAPPER (NO BORDER) --- */
+.wrapper {
+  width: 100% !important;
+  max-width: 480px !important;
+  background: var(--pf-bg-body) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 6px 20px var(--pf-shadow) !important;
+  padding: 30px !important;
+  margin: 20px auto !important;
+  border: none !important;
+  overflow: hidden !important;
+}
+
+/* --- GRID LAYOUT --- */
+/* The grid layout works perfectly with RTL direction without changes */
+.container {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 20px !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+}
+
+/* Grid placement rules (no changes needed for RTL) */
+.container > .input:first-of-type {
+  grid-column: 1 / 3;
+}
+.container > #cardNumErrHintSpan {
+  grid-column: 1 / 3;
+  margin-top: -15px;
+}
+.container > .half-containter:has(#expDateInput) {
+  grid-column: 1 / 2;
+}
+.container > .half-containter:has(#cvvInput) {
+  grid-column: 2 / 3;
+}
+.container > #expDateErrHintSpan {
+  grid-column: 1 / 2;
+  margin-top: -15px;
+}
+.container > #allEmptyErrHintSpan {
+  grid-column: 2 / 3;
+  margin-top: -15px;
+}
+.container > .half-containter:has(#chNameInput) {
+  grid-column: 1 / 3;
+}
+.container > #cardHolderErrHintSpan {
+  grid-column: 1 / 3;
+  margin-top: -15px;
+}
+.container > .pay {
+  grid-column: 1 / 3;
+  margin-top: 20px;
+}
+
+/* --- INPUTS & LABELS (BOTTOM BORDER THEME) --- */
+.input,
+.half-containter {
+  position: relative !important;
+  padding-top: 18px !important;
+  margin: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  float: none !important;
+  width: 100% !important;
+}
+
+.input-field {
+  width: 100% !important;
+  padding: 8px 0 !important;
+  font-size: 16px !important;
+  color: var(--pf-text-primary) !important;
+  background-color: transparent !important;
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-appearance: none !important;
+  border-radius: 0 !important;
+  border: none !important;
+  border-bottom: 2px solid var(--pf-border-color) !important;
+  transition: border-color 0.3s ease !important;
+}
+
+.input-field:focus {
+  border-bottom-color: var(--pf-border-focus) !important;
+}
+
+#cardNoInput,
+#expDateInput,
+#cvvInput {
+  font-family: "SF Mono", "Consolas", "Courier New", monospace !important;
+  letter-spacing: 1.5px !important;
+}
+
+/* --- LABEL POSITIONING (RTL) --- */
+.input-label {
+  position: absolute !important;
+  top: 0 !important;
+  right: 0 !important; /* RTL Change */
+  left: auto !important; /* RTL Change */
+  color: var(--pf-text-label) !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  padding: 0 !important;
+  transform: none !important;
+  pointer-events: none !important;
+}
+
+.input-field:focus + .input-label {
+  color: var(--pf-border-focus) !important;
+}
+
+.input-label-content,
+.input-label > i.icon-credit-card,
+.input-label > i.icon-calendar-empty,
+.input-label > i.icon-lock,
+.input-label > i.icon-user {
+  display: none !important;
+}
+
+/* RTL Change: Translated labels */
+.input:has(#cardNoInput) .input-label::after {
+  content: "رقم البطاقة";
+}
+.half-containter:has(#expDateInput) .input-label::after {
+  content: "شهر/سنة";
+}
+.half-containter:has(#cvvInput) .input-label::after {
+  content: "رمز التحقق (CVV)";
+}
+.half-containter:has(#chNameInput) .input-label::after {
+  content: "اسم حامل البطاقة";
+}
+
+/* --- CARD ICON MANAGEMENT (RTL) --- */
+.input .visa,
+.input .mastercard,
+.input .amex,
+.input .mada,
+.input .meeza {
+  position: absolute;
+  left: 5px; /* RTL Change */
+  right: auto; /* RTL Change */
+  bottom: 8px;
+  transform: none !important;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.input-filled .visa,
+.input-filled .mastercard,
+.input-filled .amex {
+  opacity: 0 !important;
+}
+.input .mada,
+.input .meeza {
+  display: none !important;
+}
+
+/* --- ERROR MESSAGES (RTL) --- */
+.popover {
+  display: none;
+  background: transparent !important;
+  padding: 4px 0 0 0 !important;
+  box-shadow: none !important;
+  border: none !important;
+  min-height: 18px !important;
+}
+.popover.block {
+  display: block !important;
+}
+.popover .content {
+  color: var(--pf-error) !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  text-align: right !important; /* RTL Change */
+}
+.popover .content em {
+  font-style: normal !important;
+  font-weight: 700 !important;
+}
+.input-field:has(~ .popover.block) {
+  border-bottom-color: var(--pf-error) !important;
+}
+.input-field:has(~ .popover.block) + .input-label {
+  color: var(--pf-error) !important;
+}
+
+/* --- PAY BUTTON & SPINNER --- */
+.pay {
+  display: block !important;
+  width: 100% !important;
+  background: var(--pf-button-bg) !important;
+  color: var(--pf-button-text) !important;
+  border: none !important;
+  padding: 16px 30px !important;
+  border-radius: 50px !important;
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  transition: background-color 0.3s ease, transform 0.1s ease !important;
+}
+.pay:hover:not(:disabled) {
+  background: var(--pf-button-hover-bg) !important;
+  transform: translateY(-2px) !important;
+}
+.pay:active:not(:disabled) {
+  background: var(--pf-button-active-bg) !important;
+  transform: translateY(0) !important;
+}
+.pay:disabled {
+  opacity: 0.7 !important;
+  cursor: not-allowed !important;
+  background: var(--pf-button-disabled-bg) !important;
+}
+
+.pay #loadingI {
+  display: none;
+}
+.pay.loading #loadingI {
+  display: inline-block !important;
+}
+
+/* --- FINAL CLEANUP --- */
+input[type="hidden"],
+.noscript-message,
+.tooltip {
+  display: none;
+}

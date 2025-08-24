@@ -23,6 +23,7 @@ export interface PaymentRequest {
   orderDescription: string;
   paymentOption: string;
   eci: string;
+  theme: string;
 }
 
 export interface TokenizationRequest {
