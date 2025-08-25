@@ -151,13 +151,14 @@ body {
 
 .input-field {
   width: 100% !important;
-  padding: 8px 0 !important; /* Simple padding for bottom-border style */
+  padding: 8px 40px 8px 0 !important; /* Add right space for brand icon */
   font-size: 16px !important;
   color: var(--pf-text-primary) !important;
   background-color: transparent !important;
   outline: none !important;
   box-shadow: none !important;
   -webkit-appearance: none !important;
+  appearance: none !important;
   border-radius: 0 !important; /* No rounded corners */
   border: none !important; /* Remove all borders first */
   border-bottom: 2px solid var(--pf-border-color) !important; /* FIX: Bottom border only */
@@ -200,11 +201,19 @@ body {
 
 /* Hide PayFort's animated content span and default icons */
 .input-label-content,
-.input-label > i.icon-credit-card,
 .input-label > i.icon-calendar-empty,
 .input-label > i.icon-lock,
 .input-label > i.icon-user {
   display: none !important;
+}
+/* Show and position the credit-card brand icon */
+.input .input-label > i.icon-credit-card {
+  display: block !important;
+  position: absolute !important;
+  right: 8px !important;
+  bottom: 10px !important;
+  transform: none !important;
+  pointer-events: none !important;
 }
 /* Re-create the label text using a pseudo-element */
 .input:has(#cardNoInput) .input-label::after {
@@ -222,28 +231,22 @@ body {
 
 /* --- CARD ICON MANAGEMENT --- */
 /* Position all card icons cleanly on the right */
-.input .visa,
-.input .mastercard,
-.input .amex,
-.input .mada,
-.input .meeza {
-  position: absolute;
-  right: 5px;
-  bottom: 8px; /* Position relative to the input field's bottom */
+/* Ensure the detected brand icon (e.g. Visa) is positioned correctly.
+   We don't force visibility here so the PayFort script can toggle
+   display based on the detected brand. */
+.input i.visa,
+.input i.mastercard,
+.input i.amex,
+.input i.mada,
+.input i.meeza {
+  position: absolute !important;
+  right: 8px !important;
+  bottom: 10px !important;
   transform: none !important;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-/* When JS decides a card is valid, it adds .input-filled. We then show the icon. */
-/* .input-filled .visa,
-.input-filled .mastercard,
-.input-filled .amex {
-  opacity: 1 !important;
-} */
-/* FIX: Explicitly hide the icons we don't want to see */
-.input .mada,
-.input .meeza {
-  display: none !important;
+  margin: 0 !important;
+  height: 18px !important;
+  width: auto !important;
+  pointer-events: none !important;
 }
 
 /* --- ERROR MESSAGES --- */
