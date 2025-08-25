@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import PaymentApiService from "../services/PaymentApiService";
 import type {
   PaymentRequest,
@@ -8,7 +8,6 @@ import type {
 
 const PaymentTest: React.FC = () => {
   const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
 
   const [paymentRequest, setPaymentRequest] = useState<PaymentRequest>({
     merchantReference: "",
@@ -32,8 +31,8 @@ const PaymentTest: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showPaymentForm, setShowPaymentForm] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [currentToken, setCurrentToken] = useState("");
-  const [currentOrderId, setCurrentOrderId] = useState("");
+  // Track order id locally only if needed; avoid unused state
+  const [, setCurrentOrderId] = useState<string | null>(null);
 
   const formRef = useRef<HTMLFormElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -68,12 +67,7 @@ const PaymentTest: React.FC = () => {
         event.data.action === "redirect"
       ) {
         // Handle payment completion redirect
-        handlePaymentRedirect(
-          event.data.redirectUrl,
-          event.data.success,
-          event.data.merchantReference,
-          event.data.responseCode
-        );
+        handlePaymentRedirect(event.data.redirectUrl, event.data.success);
       }
     };
 
@@ -136,38 +130,9 @@ const PaymentTest: React.FC = () => {
     }
   };
 
-  const handlePaymentCallback = (
-    token: string,
-    status: string,
-    responseCode: string
-  ) => {
-    try {
-      if (token && status === "14") {
-        setCurrentToken(token);
-        // Process payment with token if needed
-      } else {
-        setErrorMessage(
-          `Tokenization failed. Status: ${status}, Response Code: ${responseCode}`
-        );
-        setShowPaymentForm(false);
-      }
-    } catch (error) {
-      console.error("Error handling payment callback:", error);
-      setErrorMessage(
-        `Error processing payment callback: ${
-          error instanceof Error ? error.message : "Unknown error"
-        }`
-      );
-      setShowPaymentForm(false);
-    }
-  };
+  // Note: Tokenization callback is handled via redirect message above
 
-  const handlePaymentRedirect = (
-    redirectUrl: string,
-    success: boolean,
-    merchantReference: string,
-    responseCode: string
-  ) => {
+  const handlePaymentRedirect = (redirectUrl: string, success: boolean) => {
     try {
       console.log(
         "Payment completed - Success:",
@@ -194,16 +159,7 @@ const PaymentTest: React.FC = () => {
     setTokenizationFormData(null);
   };
 
-  const startNewPayment = () => {
-    setShowPaymentForm(false);
-    setErrorMessage("");
-    setTokenizationFormData(null);
-    const newOrderId = `TEST-${new Date()
-      .toISOString()
-      .replace(/[-:T]/g, "")
-      .slice(0, 14)}`;
-    setPaymentRequest((prev) => ({ ...prev, merchantReference: newOrderId }));
-  };
+  // Removed unused startNewPayment helper
 
   return (
     <div className="container mt-4">
