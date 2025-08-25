@@ -369,7 +369,7 @@ const PaymentTest: React.FC = () => {
 
                   <form
                     ref={formRef}
-                    action="/payfort-custom-form.html"
+                    action="payfort-custom-form.html"
                     method="get"
                     target="paymentFrame"
                     style={{ display: "none" }}
