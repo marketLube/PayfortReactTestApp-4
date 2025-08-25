@@ -1,0 +1,9 @@
+{
+  "rewrites": [
+    {
+      "source": "/payfort-custom-form.html",
+      "destination": "/payfort-custom-form.html"
+    },
+    { "source": "/(.*)", "destination": "/" }
+  ]
+}
