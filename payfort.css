@@ -323,3 +323,6 @@ input[type="hidden"],
 .tooltip {
   display: none !important;
 }
+* {
+  overflow: visible !important;
+}
