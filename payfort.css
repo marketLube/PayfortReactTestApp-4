@@ -1,13 +1,3 @@
-/*
-================================================================================
- Amazon PayFort - Elegant & Functional Custom Payment Form CSS
- Version 10.1: Bottom-Border Theme Fix
-================================================================================
- * This version implements a bottom-border-only input style.
- * It uses a stable grid layout and addresses specific icon/spinner issues.
-================================================================================
-*/
-
 /* Prevent scroll on html and body */
 html {
   height: 100% !important;
@@ -60,8 +50,7 @@ html {
 
 /* --- GLOBAL & BODY STYLES --- */
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, sans-serif !important;
+  font-family: "Arial", sans-serif !important;
   padding: 10px !important;
   margin: 0 !important;
   display: flex !important;
@@ -153,6 +142,7 @@ body {
   width: 100% !important;
   padding: 8px 40px 8px 0 !important; /* Add right space for brand icon */
   font-size: 16px !important;
+  font-family: Arial, sans-serif !important;
   color: var(--pf-text-primary) !important;
   background-color: transparent !important;
   outline: none !important;
@@ -175,8 +165,15 @@ body {
 #cardNoInput,
 #expDateInput,
 #cvvInput {
-  font-family: "SF Mono", "Consolas", "Courier New", monospace !important;
+  font-family: Arial, sans-serif !important;
   letter-spacing: 1.5px !important;
+}
+
+/* Match cardholder name input font with other inputs */
+#chNameInput {
+  font-family: Arial, sans-serif !important;
+  font-size: 16px !important;
+  letter-spacing: 0 !important;
 }
 
 /* --- LABEL POSITIONING --- */
@@ -200,20 +197,22 @@ body {
 }
 
 /* Hide PayFort's animated content span and default icons */
+
 .input-label-content,
 .input-label > i.icon-calendar-empty,
 .input-label > i.icon-lock,
 .input-label > i.icon-user {
   display: none !important;
 }
-/* Show and position the credit-card brand icon */
+
+/* Hide any remaining label icons (e.g., info/! icons) */
+.input-label > i {
+  display: none !important;
+}
+
+/* Hide the credit-card label icon */
 .input .input-label > i.icon-credit-card {
-  display: block !important;
-  position: absolute !important;
-  right: 8px !important;
-  bottom: 10px !important;
-  transform: none !important;
-  pointer-events: none !important;
+  display: none !important;
 }
 /* Re-create the label text using a pseudo-element */
 .input:has(#cardNoInput) .input-label::after {
@@ -229,24 +228,43 @@ body {
   content: "Cardholder Name";
 }
 
-/* --- CARD ICON MANAGEMENT --- */
-/* Position all card icons cleanly on the right */
-/* Ensure the detected brand icon (e.g. Visa) is positioned correctly.
-   We don't force visibility here so the PayFort script can toggle
-   display based on the detected brand. */
-.input i.visa,
-.input i.mastercard,
 .input i.amex,
 .input i.mada,
+.input i.meeza,
+.input i.mastercard {
+  height: 2rem !important;
+  width: 4rem !important;
+}
+.input i.amex {
+  background: url("https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/American_Express_logo_%282018%29.svg/2052px-American_Express_logo_%282018%29.svg.png")
+    no-repeat center center;
+  background-size: contain;
+  display: inline-block;
+  font-size: 0 !important;
+}
+.input i.mada {
+  background: url("https://www.rowadpacking.com/images/Mada_Logo-01.png")
+    no-repeat center center;
+  background-size: contain;
+  font-size: 0 !important;
+  display: inline-block;
+}
 .input i.meeza {
-  position: absolute !important;
-  right: 8px !important;
-  bottom: 10px !important;
-  transform: none !important;
-  margin: 0 !important;
-  height: 18px !important;
-  width: auto !important;
-  pointer-events: none !important;
+  background: url("https://nilescanandlabs.net/wp-content/uploads/2024/05/meza-1.jpg")
+    no-repeat center center;
+  background-size: contain;
+  font-size: 0 !important;
+  display: inline-block;
+  background-color: yellow;
+  display: none !important;
+}
+
+.input i.mastercard {
+  font-size: 0 !important;
+  display: inline-block;
+  background: url("https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Mastercard_2019_logo.svg/1200px-Mastercard_2019_logo.svg.png")
+    no-repeat center center;
+  background-size: contain;
 }
 
 /* --- ERROR MESSAGES --- */
@@ -295,6 +313,7 @@ body {
   cursor: pointer !important;
   transition: background-color 0.3s ease, transform 0.1s ease !important;
 }
+
 .pay:hover:not(:disabled) {
   background: var(--pf-button-hover-bg) !important;
   transform: translateY(-2px) !important;
